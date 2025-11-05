@@ -23,7 +23,8 @@ namespace PAIFGAMES.FCG.Api.Helpers.Auth.Policies
 
             var userData = JsonConvert.DeserializeObject<UserData>(userDataClaim.Value);
 
-            if (userData != null && userData.User != null && requirement.Roles.All(role => userData.User.Roles.Any(userRole => userRole.RoleName == role)))
+            if (userData != null && userData.User != null && userData.User.Roles != null &&
+        requirement.Roles.All(role => userData.User.Roles.Any(userRole => userRole.RoleName == role)))
             {
                 context?.Succeed(requirement);
             }

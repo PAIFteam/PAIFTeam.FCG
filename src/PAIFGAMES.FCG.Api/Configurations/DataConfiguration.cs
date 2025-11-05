@@ -11,7 +11,6 @@ namespace PAIFGAMES.FCG.Api.Configurations
         public static void AddDataConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             var baseConnectionString = configuration.GetConnectionString("DefaultConnection");
-            //var connectionString = ConnectionStringResolver.GetValidConnectionString(baseConnectionString);
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
