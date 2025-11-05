@@ -1,0 +1,42 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "SAP@ssw0rd"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    networks:
+      - paifgames-network
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-C", "-S", "localhost", "-U", "sa", "-P", "SAP@ssw0rd", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  api:
+    container_name: api
+    build:
+      context: ./src
+      dockerfile: PAIFGAMES.FCG.Api/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - paifgames-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Local
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+networks:
+  paifgames-network:
+    driver: bridge
+
+volumes:
+  sqlserver-data:
